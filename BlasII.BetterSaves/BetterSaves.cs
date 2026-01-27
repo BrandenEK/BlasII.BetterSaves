@@ -1,5 +1,6 @@
 ﻿using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Persistence;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace BlasII.BetterSaves;
@@ -11,12 +12,31 @@ public class BetterSaves : BlasIIMod, ISlotPersistentMod<BatterSavesSlotData>
 {
     internal BetterSaves() : base(ModInfo.MOD_ID, ModInfo.MOD_NAME, ModInfo.MOD_AUTHOR, ModInfo.MOD_VERSION) { }
 
+    private readonly Dictionary<int, string> _slotNames = [];
+
     private string _currentSlotName;
+    private int _loadedSlot;
 
     /// <summary>
     /// The name of the current save file
     /// </summary>
-    public string CurrentSlotName => _currentSlotName ?? "Unnamed save file";
+    public string CurrentSlotName => _currentSlotName ?? NO_NAME;
+
+    /// <summary>
+    /// Gets the name of the specified save file
+    /// </summary>
+    public string GetSlotNameForIndex(int index)
+    {
+        return _slotNames.TryGetValue(index, out string name) ? name : NO_NAME;
+    }
+
+    /// <summary>
+    /// When a slot is being loaded, update the index first
+    /// </summary>
+    public void UpdateLoadedSlot(int slot)
+    {
+        _loadedSlot = slot;
+    }
 
     /// <summary>
     /// Saves the current slot name
@@ -35,7 +55,9 @@ public class BetterSaves : BlasIIMod, ISlotPersistentMod<BatterSavesSlotData>
     /// </summary>
     public void LoadSlot(BatterSavesSlotData data)
     {
+        ModLog.Warn($"Loaded name {data.SlotName} for slot {_loadedSlot}");
         _currentSlotName = data.SlotName;
+        _slotNames[_loadedSlot] = data.SlotName;
     }
 
     /// <summary>
@@ -50,4 +72,6 @@ public class BetterSaves : BlasIIMod, ISlotPersistentMod<BatterSavesSlotData>
     /// The total number of slots allowed
     /// </summary>
     public const int TOTAL_SLOTS = 10;
+
+    private const string NO_NAME = "Unnamed save file";
 }
