@@ -25,20 +25,6 @@ class t4
 }
 
 /// <summary>
-/// Display the time last played on the slot UI
-/// </summary>
-[HarmonyPatch(typeof(UISelectableMainMenuSlot), nameof(UISelectableMainMenuSlot.SetSlotData))]
-class UISelectableMainMenuSlot_SetSlotData_Patch
-{
-    public static void Postfix(UISelectableMainMenuSlot __instance, SlotInfo info)
-    {
-        string zone = __instance.zoneName.normalText.text;
-        string date = info.dateTime.ToString("MMM d yyyy");
-        __instance.zoneName.SetText($"{zone}    - {date} -");
-    }
-}
-
-/// <summary>
 /// Scroll the slots menu whenever a new slot is selected
 /// </summary>
 [HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.OnSlotSelected))]
@@ -110,6 +96,8 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
             // Load slot infos
             for (int i = 3; i < BetterSaves.TOTAL_SLOTS; i++)
             {
+                Main.BetterSaves.UpdateLoadedSlot(i);
+
                 SlotInfo info = __instance.GetSlotInfo(i).Result;
                 __instance.slotsInfo.Add(info);
             }
@@ -118,16 +106,11 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
         // Refresh new slots
         for (int i = 3; i < BetterSaves.TOTAL_SLOTS; i++)
         {
+            Main.BetterSaves.UpdateLoadedSlot(i);
+
             __instance.RefreshSlotUI(i);
         }
-    }
 
-    // TODO
-            // Clicking a slot doesnt actually start
-            // Always populated with empty
-            // Cant scroll down
-            // Mask or hide other slots
-            // Reset initialized
-    // Selected slot doesnt persist across game
-            // Add last played to UI
+        //__instance.slotsList.SelectElement(5);
+    }
 }
