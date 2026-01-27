@@ -25,20 +25,6 @@ class t4
 }
 
 /// <summary>
-/// Display the time last played on the slot UI
-/// </summary>
-[HarmonyPatch(typeof(UISelectableMainMenuSlot), nameof(UISelectableMainMenuSlot.SetSlotData))]
-class UISelectableMainMenuSlot_SetSlotData_Patch
-{
-    public static void Postfix(UISelectableMainMenuSlot __instance, SlotInfo info)
-    {
-        string zone = __instance.zoneName.normalText.text;
-        string date = info.dateTime.ToString("MMM d yyyy");
-        __instance.zoneName.SetText($"{zone}    - {date} -");
-    }
-}
-
-/// <summary>
 /// Scroll the slots menu whenever a new slot is selected
 /// </summary>
 [HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.OnSlotSelected))]

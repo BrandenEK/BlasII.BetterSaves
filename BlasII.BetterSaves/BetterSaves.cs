@@ -1,5 +1,6 @@
 ﻿using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Persistence;
+using UnityEngine;
 
 namespace BlasII.BetterSaves;
 
@@ -10,10 +11,12 @@ public class BetterSaves : BlasIIMod, ISlotPersistentMod<BatterSavesSlotData>
 {
     internal BetterSaves() : base(ModInfo.MOD_ID, ModInfo.MOD_NAME, ModInfo.MOD_AUTHOR, ModInfo.MOD_VERSION) { }
 
+    private string _currentSlotName;
+
     /// <summary>
     /// The name of the current save file
     /// </summary>
-    public string CurrentSlotName { get; private set; }
+    public string CurrentSlotName => _currentSlotName ?? "Unnamed save file";
 
     /// <summary>
     /// Saves the current slot name
@@ -22,7 +25,8 @@ public class BetterSaves : BlasIIMod, ISlotPersistentMod<BatterSavesSlotData>
     {
         return new BatterSavesSlotData()
         {
-            SlotName = CurrentSlotName
+            SlotName = $"Frame{Time.frameCount}"
+            //SlotName = _currentSlotName
         };
     }
 
@@ -31,7 +35,7 @@ public class BetterSaves : BlasIIMod, ISlotPersistentMod<BatterSavesSlotData>
     /// </summary>
     public void LoadSlot(BatterSavesSlotData data)
     {
-        CurrentSlotName = data.SlotName;
+        _currentSlotName = data.SlotName;
     }
 
     /// <summary>
@@ -39,7 +43,7 @@ public class BetterSaves : BlasIIMod, ISlotPersistentMod<BatterSavesSlotData>
     /// </summary>
     public void ResetSlot()
     {
-        CurrentSlotName = null;
+        _currentSlotName = null;
     }
 
     /// <summary>
