@@ -6,33 +6,6 @@ using UnityEngine.UI;
 
 namespace BlasII.BetterSaves;
 
-[HarmonyPatch(typeof(UISelectableMainMenuSlot), nameof(UISelectableMainMenuSlot.SetSelected))]
-class t
-{
-    public static void Postfix(UISelectableMainMenuSlot __instance, bool selected)
-    {
-        ModLog.Info($"{__instance.name} is selected: {selected}");
-    }
-}
-
-[HarmonyPatch(typeof(UISelectableMainMenuSlot), nameof(UISelectableMainMenuSlot.SetSlotData))]
-class t1
-{
-    public static void Postfix(UISelectableMainMenuSlot __instance, SlotInfo info)
-    {
-        ModLog.Info($"{__instance.name} is setting slot data: {info.playtimeMinutes}");
-    }
-}
-
-[HarmonyPatch(typeof(UISelectableMainMenuSlot), nameof(UISelectableMainMenuSlot.SetSlotInfo))]
-class t2
-{
-    public static void Postfix(UISelectableMainMenuSlot __instance, SlotInfo info)
-    {
-        ModLog.Info($"{__instance.name} is setting slot info: {info.playtimeMinutes}");
-    }
-}
-
 [HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.OnSlotAccept))]
 class t3
 {
@@ -52,6 +25,20 @@ class t4
 }
 
 /// <summary>
+/// Display the time last played on the slot UI
+/// </summary>
+[HarmonyPatch(typeof(UISelectableMainMenuSlot), nameof(UISelectableMainMenuSlot.SetSlotData))]
+class UISelectableMainMenuSlot_SetSlotData_Patch
+{
+    public static void Postfix(UISelectableMainMenuSlot __instance, SlotInfo info)
+    {
+        string zone = __instance.zoneName.normalText.text;
+        string date = info.dateTime.ToString("MMM d yyyy");
+        __instance.zoneName.SetText($"{zone}    - {date} -");
+    }
+}
+
+/// <summary>
 /// Scroll the slots menu whenever a new slot is selected
 /// </summary>
 [HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.OnSlotSelected))]
@@ -61,9 +48,6 @@ class MainMenuWindowLogic_OnSlotSelected_Patch
     {
         if (BetterSaves.TOTAL_SLOTS <= 3)
             return;
-
-        ModLog.Warn(__instance.slotsList.elementArray.Count);
-        ModLog.Warn(__instance.slotsInfo.Count);
 
         int selected = int.Parse(data.obj.name.Split('_')[1]);
         int ypos;
@@ -145,4 +129,5 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
             // Mask or hide other slots
             // Reset initialized
     // Selected slot doesnt persist across game
+            // Add last played to UI
 }
