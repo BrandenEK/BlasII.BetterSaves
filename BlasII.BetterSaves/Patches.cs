@@ -137,16 +137,20 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
 
         Main.BetterSaves.TempDoneWithInit = true;
 
+        // Setup references
         var list = __instance.slotsList.elementArray;
+        GameObject template = list[0].obj.gameObject;
         Transform parent = list[0].obj.gameObject.transform.parent;
 
+        // Add image mask to parent
         parent.parent.gameObject.AddComponent<Image>();
         var mask = parent.parent.gameObject.AddComponent<Mask>();
         mask.showMaskGraphic = false;
 
+        // Create new UI elements
         for (int i = 3; i < TOTAL_SLOTS; i++)
         {
-            GameObject slot = Object.Instantiate(list[i % 3].obj.gameObject, parent);
+            GameObject slot = Object.Instantiate(template, parent);
             list.Add(new ListData()
             {
                 obj = slot.GetComponent<UISelectableMainMenuSlot>(),
@@ -161,10 +165,9 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
 
             UIPixelTextWithShadow text = slot.transform.Find("Number").GetComponent<UIPixelTextWithShadow>();
             text.SetText((i + 1).ToString());
-
-            ModLog.Info(list[i % 3].obj.gameObject.transform.Cast<RectTransform>().anchoredPosition);
         }
 
+        // Refresh new slots
         for (int i = 3; i < TOTAL_SLOTS; i++)
         {
             __instance.RefreshSlotUI(i);
