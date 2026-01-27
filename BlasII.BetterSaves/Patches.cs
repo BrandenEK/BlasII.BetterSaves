@@ -82,10 +82,6 @@ class t4
 [HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.InitializeAll))]
 class t7
 {
-    public static void Postfix(MainMenuWindowLogic __instance)
-    {
-        ModLog.Error($"InitializeAll");
-    }
 }
 
 [HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.InitializeSlots))]
@@ -107,6 +103,9 @@ class MainMenuWindowLogic_OnSlotSelected_Patch
     {
         if (TOTAL_SLOTS <= 3)
             return;
+
+        ModLog.Warn(__instance.slotsList.elementArray.Count);
+        ModLog.Warn(__instance.slotsInfo.Count);
 
         int selected = int.Parse(data.obj.name.Split('_')[1]);
         int ypos;
@@ -130,12 +129,10 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
 {
     public static void Postfix(MainMenuWindowLogic __instance)
     {
-        ModLog.Error("Opening slots menu");
-
-        if (Main.BetterSaves.TempDoneWithInit)
+        if (__instance.slotsList.elementArray.Count == TOTAL_SLOTS)
             return;
 
-        Main.BetterSaves.TempDoneWithInit = true;
+        ModLog.Error("Initializing slots menu");
 
         // Setup references
         var list = __instance.slotsList.elementArray;
