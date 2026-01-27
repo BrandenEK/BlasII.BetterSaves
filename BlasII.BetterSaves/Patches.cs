@@ -120,7 +120,9 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
         var list = __instance.slotsList.elementArray;
         Transform parent = list[0].obj.gameObject.transform.parent;
 
-        parent.parent.gameObject.AddComponent<Mask>();
+        parent.parent.gameObject.AddComponent<Image>();
+        var mask = parent.parent.gameObject.AddComponent<Mask>();
+        mask.showMaskGraphic = false;
 
         for (int i = 3; i < TOTAL_SLOTS; i++)
         {
@@ -156,4 +158,5 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
     // Always populated with empty
     // Cant scroll down
     // Mask or hide other slots
+    // Reset initialized
 }
