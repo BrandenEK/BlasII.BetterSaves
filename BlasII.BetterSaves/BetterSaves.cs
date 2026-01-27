@@ -23,15 +23,12 @@ public class BetterSaves : BlasIIMod, ISlotPersistentMod<BatterSavesSlotData>
     public string CurrentSlotName => _currentSlotName ?? NO_NAME;
 
     /// <summary>
-    /// Gets the name of the specified save file
+    /// The name of the save file that is loaded on the main menu
     /// </summary>
-    public string GetSlotNameForIndex(int index)
-    {
-        return _slotNames.TryGetValue(index, out string name) ? name : NO_NAME;
-    }
+    public string MenuSlotName => _slotNames.TryGetValue(_loadedSlot, out string name) ? name : NO_NAME;
 
     /// <summary>
-    /// When a slot is being loaded, update the index first
+    /// Updates the loaded slot on the main menu
     /// </summary>
     public void UpdateLoadedSlot(int slot)
     {

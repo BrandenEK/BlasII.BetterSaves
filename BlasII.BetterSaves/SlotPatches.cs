@@ -106,6 +106,8 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
         // Refresh new slots
         for (int i = 3; i < BetterSaves.TOTAL_SLOTS; i++)
         {
+            Main.BetterSaves.UpdateLoadedSlot(i);
+
             __instance.RefreshSlotUI(i);
         }
 
