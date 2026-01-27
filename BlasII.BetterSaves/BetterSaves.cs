@@ -8,6 +8,8 @@ public class BetterSaves : BlasIIMod
 
     public int CurrentPage { get; private set; }
 
+    public bool TempDoneWithInit { get; set; } = false;
+
     protected override void OnInitialize()
     {
         CurrentPage = 1;
