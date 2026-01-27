@@ -51,20 +51,6 @@ class t4
     }
 }
 
-[HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.InitializeAll))]
-class t7
-{
-}
-
-[HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.InitializeSlots))]
-class t8
-{
-    public static void Postfix(MainMenuWindowLogic __instance)
-    {
-        ModLog.Error($"InitializeSlots");
-    }
-}
-
 /// <summary>
 /// Scroll the slots menu whenever a new slot is selected
 /// </summary>
@@ -94,6 +80,9 @@ class MainMenuWindowLogic_OnSlotSelected_Patch
     }
 }
 
+/// <summary>
+/// Create the UI and load slot data when menu is opened
+/// </summary>
 [HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.OnOpenSlots))]
 class MainMenuWindowLogic_OnOpenSlots_Patch
 {
@@ -109,9 +98,8 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
             Transform parent = list[0].obj.gameObject.transform.parent;
 
             // Add image mask to parent
-            parent.parent.gameObject.AddComponent<Image>();
-            var mask = parent.parent.gameObject.AddComponent<Mask>();
-            mask.showMaskGraphic = false;
+            __instance.slotsList.gameObject.AddComponent<Image>();
+            __instance.slotsList.gameObject.AddComponent<Mask>().showMaskGraphic = false;
 
             // Create new UI elements
             for (int i = 3; i < BetterSaves.TOTAL_SLOTS; i++)
