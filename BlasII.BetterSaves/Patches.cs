@@ -101,7 +101,7 @@ class MainMenuWindowLogic_OnSlotSelected_Patch
 {
     public static void Postfix(MainMenuWindowLogic __instance, ListData data)
     {
-        if (TOTAL_SLOTS <= 3)
+        if (BetterSaves.TOTAL_SLOTS <= 3)
             return;
 
         ModLog.Warn(__instance.slotsList.elementArray.Count);
@@ -112,16 +112,14 @@ class MainMenuWindowLogic_OnSlotSelected_Patch
 
         if (selected == 0)
             ypos = 0;
-        else if (selected == TOTAL_SLOTS - 1)
-            ypos = (TOTAL_SLOTS - 3) * 200;
+        else if (selected == BetterSaves.TOTAL_SLOTS - 1)
+            ypos = (BetterSaves.TOTAL_SLOTS - 3) * 200;
         else
             ypos = (selected - 1) * 200;
 
         var parent = data.obj.gameObject.transform.parent.Cast<RectTransform>();
         parent.anchoredPosition = new Vector2(parent.anchoredPosition.x, ypos);
     }
-
-    private const int TOTAL_SLOTS = 9;
 }
 
 [HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.OnOpenSlots))]
@@ -129,7 +127,7 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
 {
     public static void Postfix(MainMenuWindowLogic __instance)
     {
-        if (__instance.slotsList.elementArray.Count == TOTAL_SLOTS)
+        if (__instance.slotsList.elementArray.Count == BetterSaves.TOTAL_SLOTS)
             return;
 
         ModLog.Error("Initializing slots menu");
@@ -145,7 +143,7 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
         mask.showMaskGraphic = false;
 
         // Create new UI elements
-        for (int i = 3; i < TOTAL_SLOTS; i++)
+        for (int i = 3; i < BetterSaves.TOTAL_SLOTS; i++)
         {
             GameObject slot = Object.Instantiate(template, parent);
             list.Add(new ListData()
@@ -165,19 +163,17 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
         }
 
         // Refresh new slots
-        for (int i = 3; i < TOTAL_SLOTS; i++)
+        for (int i = 3; i < BetterSaves.TOTAL_SLOTS; i++)
         {
             __instance.RefreshSlotUI(i);
         }
     }
 
-    private const int TOTAL_SLOTS = 9;
-
     // TODO
     // Clicking a slot doesnt actually start
-    // Always populated with empty
-    // Cant scroll down
-    // Mask or hide other slots
+            // Always populated with empty
+            // Cant scroll down
+            // Mask or hide other slots
     // Reset initialized
     // Selected slot doesnt persist across game
 }

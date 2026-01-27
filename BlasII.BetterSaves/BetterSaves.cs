@@ -9,4 +9,9 @@ public class BetterSaves : BlasIIMod
     protected override void OnInitialize()
     {
     }
+
+    /// <summary>
+    /// The total number of slots allowed
+    /// </summary>
+    public const int TOTAL_SLOTS = 10;
 }
