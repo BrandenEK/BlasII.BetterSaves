@@ -86,28 +86,17 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
                 row = i,
                 newSelection = false
             });
+            __instance.slotsInfo.Add(new SlotInfo());
 
-            slot.name = $"Element_{i + 1}";
+            slot.name = $"Element_{i}";
 
             UIPixelTextWithShadow text = slot.transform.Find("Number").GetComponent<UIPixelTextWithShadow>();
-            text.SetText(i.ToString());
-
-            // Set navigation maybe
-
-            //int idx = Main.BetterSaves.CurrentPage * 3 + i + 1;
-
-            //UIPixelTextWithShadow text = list[i].obj.transform.Find("Number").GetComponent<UIPixelTextWithShadow>();
-            //text.SetText(idx.ToString());
+            text.SetText((i + 1).ToString());
         }
 
-        for (int i = 0; i < list.Count; i++)
+        for (int i = 3; i < total; i++)
         {
-            ModLog.Error(list[i].obj.name);
-
-            //bool screenActive = i / 3 == 2;
-            //list[i + 0].obj.gameObject.SetActive(screenActive);
-            //list[i + 1].obj.gameObject.SetActive(screenActive);
-            //list[i + 2].obj.gameObject.SetActive(screenActive);
+            __instance.RefreshSlotUI(i);
         }
     }
 }
