@@ -2,6 +2,7 @@
 using HarmonyLib;
 using Il2CppTGK.Game.Components.UI;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace BlasII.BetterSaves;
 
@@ -78,6 +79,32 @@ class t4
     }
 }
 
+[HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.OnSlotSelected))]
+class MainMenuWindowLogic_OnSlotSelected_Patch
+{
+    public static void Postfix(MainMenuWindowLogic __instance, ListData data)
+    {
+        ModLog.Warn($"New slot is selected: {data.obj.name}");
+
+        int selected = int.Parse(data.obj.name.Split('_')[1]);
+        int ypos;
+
+        if (selected == 0)
+            ypos = 0;
+        else if (selected == TOTAL_SLOTS - 1)
+            ypos = (TOTAL_SLOTS - 3) * 200;
+        else
+            ypos = (selected - 1) * 200;
+
+            var parent = data.obj.gameObject.transform.parent.Cast<RectTransform>();
+        ModLog.Warn(parent.anchoredPosition);
+
+        parent.anchoredPosition = new Vector2(parent.anchoredPosition.x, ypos);
+    }
+
+    private const int TOTAL_SLOTS = 9;
+}
+
 [HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.OnOpenSlots))]
 class MainMenuWindowLogic_OnOpenSlots_Patch
 {
@@ -90,12 +117,12 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
 
         Main.BetterSaves.TempDoneWithInit = true;
 
-        int total = 9;
-
         var list = __instance.slotsList.elementArray;
         Transform parent = list[0].obj.gameObject.transform.parent;
 
-        for (int i = 3; i < total; i++)
+        parent.parent.gameObject.AddComponent<Mask>();
+
+        for (int i = 3; i < TOTAL_SLOTS; i++)
         {
             GameObject slot = Object.Instantiate(list[i % 3].obj.gameObject, parent);
             list.Add(new ListData()
@@ -112,16 +139,21 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
 
             UIPixelTextWithShadow text = slot.transform.Find("Number").GetComponent<UIPixelTextWithShadow>();
             text.SetText((i + 1).ToString());
+
+            ModLog.Info(list[i % 3].obj.gameObject.transform.Cast<RectTransform>().anchoredPosition);
         }
 
-        for (int i = 3; i < total; i++)
+        for (int i = 3; i < TOTAL_SLOTS; i++)
         {
             __instance.RefreshSlotUI(i);
         }
     }
 
+    private const int TOTAL_SLOTS = 9;
+
     // TODO
     // Clicking a slot doesnt actually start
     // Always populated with empty
     // Cant scroll down
+    // Mask or hide other slots
 }
