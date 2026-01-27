@@ -6,34 +6,6 @@ using UnityEngine.UI;
 
 namespace BlasII.BetterSaves;
 
-//[HarmonyPatch(typeof(UISelectableMainMenuSlot), nameof(UISelectableMainMenuSlot.UpdateSelected))]
-//class UISelectableMainMenuSlot_UpdateSelected_Patch
-//{
-//    public static void Postfix(UISelectableMainMenuSlot __instance)
-//    {
-//        ModLog.Error(__instance.name + ": update");
-
-//        Transform child = __instance.transform.Find("Number");
-
-//        if (child == null)
-//        {
-//            ModLog.Error("Failed to find number transform");
-//            return;
-//        }
-
-//        UIPixelTextWithShadow text = child.GetComponent<UIPixelTextWithShadow>();
-
-//        if (text == null)
-//        {
-//            ModLog.Error("Failed to find text component");
-//            return;
-//        }
-
-//        ModLog.Warn("Text is [" + text.normalText.text + "]");
-//        text.SetText("5");
-//    }
-//}
-
 [HarmonyPatch(typeof(UISelectableMainMenuSlot), nameof(UISelectableMainMenuSlot.SetSelected))]
 class t
 {
@@ -127,39 +99,48 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
 {
     public static void Postfix(MainMenuWindowLogic __instance)
     {
-        if (__instance.slotsList.elementArray.Count == BetterSaves.TOTAL_SLOTS)
-            return;
-
-        ModLog.Error("Initializing slots menu");
-
-        // Setup references
-        var list = __instance.slotsList.elementArray;
-        GameObject template = list[0].obj.gameObject;
-        Transform parent = list[0].obj.gameObject.transform.parent;
-
-        // Add image mask to parent
-        parent.parent.gameObject.AddComponent<Image>();
-        var mask = parent.parent.gameObject.AddComponent<Mask>();
-        mask.showMaskGraphic = false;
-
-        // Create new UI elements
-        for (int i = 3; i < BetterSaves.TOTAL_SLOTS; i++)
+        if (__instance.slotsList.elementArray.Count < BetterSaves.TOTAL_SLOTS)
         {
-            GameObject slot = Object.Instantiate(template, parent);
-            list.Add(new ListData()
+            ModLog.Error("Populating UI for new slots");
+
+            // Setup references
+            var list = __instance.slotsList.elementArray;
+            GameObject template = list[0].obj.gameObject;
+            Transform parent = list[0].obj.gameObject.transform.parent;
+
+            // Add image mask to parent
+            parent.parent.gameObject.AddComponent<Image>();
+            var mask = parent.parent.gameObject.AddComponent<Mask>();
+            mask.showMaskGraphic = false;
+
+            // Create new UI elements
+            for (int i = 3; i < BetterSaves.TOTAL_SLOTS; i++)
             {
-                obj = slot.GetComponent<UISelectableMainMenuSlot>(),
-                row = i,
-                newSelection = false
-            });
+                GameObject slot = Object.Instantiate(template, parent);
+                list.Add(new ListData()
+                {
+                    obj = slot.GetComponent<UISelectableMainMenuSlot>(),
+                    row = i,
+                    newSelection = false
+                });
 
-            SlotInfo info = __instance.GetSlotInfo(i).Result;
-            __instance.slotsInfo.Add(info);
+                slot.name = $"Element_{i}";
 
-            slot.name = $"Element_{i}";
+                UIPixelTextWithShadow text = slot.transform.Find("Number").GetComponent<UIPixelTextWithShadow>();
+                text.SetText((i + 1).ToString());
+            }
+        }
+        
+        if (__instance.slotsInfo.Count < BetterSaves.TOTAL_SLOTS)
+        {
+            ModLog.Error("Populating info for new slots");
 
-            UIPixelTextWithShadow text = slot.transform.Find("Number").GetComponent<UIPixelTextWithShadow>();
-            text.SetText((i + 1).ToString());
+            // Load slot infos
+            for (int i = 3; i < BetterSaves.TOTAL_SLOTS; i++)
+            {
+                SlotInfo info = __instance.GetSlotInfo(i).Result;
+                __instance.slotsInfo.Add(info);
+            }
         }
 
         // Refresh new slots
@@ -170,10 +151,10 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
     }
 
     // TODO
-    // Clicking a slot doesnt actually start
+            // Clicking a slot doesnt actually start
             // Always populated with empty
             // Cant scroll down
             // Mask or hide other slots
-    // Reset initialized
+            // Reset initialized
     // Selected slot doesnt persist across game
 }
