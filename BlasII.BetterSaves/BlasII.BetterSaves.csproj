@@ -8,7 +8,7 @@
     <Product>Better Saves</Product>
     <Authors>Damocles</Authors>
     <Company>Damocles</Company>
-    <Description>Allows creating more save files</Description>
+    <Description>Allows creating more save files and naming them</Description>
     <Version>0.1.0</Version>
     
     <TargetName>BetterSaves</TargetName>

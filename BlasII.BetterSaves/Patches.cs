@@ -120,14 +120,7 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
         {
             __instance.RefreshSlotUI(i);
         }
-    }
 
-    // TODO
-            // Clicking a slot doesnt actually start
-            // Always populated with empty
-            // Cant scroll down
-            // Mask or hide other slots
-            // Reset initialized
-    // Selected slot doesnt persist across game
-            // Add last played to UI
+        //__instance.slotsList.SelectElement(5);
+    }
 }
