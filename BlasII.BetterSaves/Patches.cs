@@ -79,12 +79,34 @@ class t4
     }
 }
 
+[HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.InitializeAll))]
+class t7
+{
+    public static void Postfix(MainMenuWindowLogic __instance)
+    {
+        ModLog.Error($"InitializeAll");
+    }
+}
+
+[HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.InitializeSlots))]
+class t8
+{
+    public static void Postfix(MainMenuWindowLogic __instance)
+    {
+        ModLog.Error($"InitializeSlots");
+    }
+}
+
+/// <summary>
+/// Scroll the slots menu whenever a new slot is selected
+/// </summary>
 [HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.OnSlotSelected))]
 class MainMenuWindowLogic_OnSlotSelected_Patch
 {
     public static void Postfix(MainMenuWindowLogic __instance, ListData data)
     {
-        ModLog.Warn($"New slot is selected: {data.obj.name}");
+        if (TOTAL_SLOTS <= 3)
+            return;
 
         int selected = int.Parse(data.obj.name.Split('_')[1]);
         int ypos;
@@ -96,9 +118,7 @@ class MainMenuWindowLogic_OnSlotSelected_Patch
         else
             ypos = (selected - 1) * 200;
 
-            var parent = data.obj.gameObject.transform.parent.Cast<RectTransform>();
-        ModLog.Warn(parent.anchoredPosition);
-
+        var parent = data.obj.gameObject.transform.parent.Cast<RectTransform>();
         parent.anchoredPosition = new Vector2(parent.anchoredPosition.x, ypos);
     }
 
@@ -159,4 +179,5 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
     // Cant scroll down
     // Mask or hide other slots
     // Reset initialized
+    // Selected slot doesnt persist across game
 }
