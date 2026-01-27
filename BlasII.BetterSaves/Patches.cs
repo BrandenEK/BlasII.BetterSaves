@@ -60,6 +60,24 @@ class t2
     }
 }
 
+[HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.OnSlotAccept))]
+class t3
+{
+    public static void Postfix(MainMenuWindowLogic __instance, int index, SlotInfo info)
+    {
+        ModLog.Info($"Accept slot for index {index}");
+    }
+}
+
+[HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.OnSlotAcceptPressed))]
+class t4
+{
+    public static void Postfix(MainMenuWindowLogic __instance)
+    {
+        ModLog.Info($"Accept slot pressed");
+    }
+}
+
 [HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.OnOpenSlots))]
 class MainMenuWindowLogic_OnOpenSlots_Patch
 {
@@ -86,7 +104,9 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
                 row = i,
                 newSelection = false
             });
-            __instance.slotsInfo.Add(new SlotInfo());
+
+            SlotInfo info = __instance.GetSlotInfo(i).Result;
+            __instance.slotsInfo.Add(info);
 
             slot.name = $"Element_{i}";
 
@@ -99,4 +119,9 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
             __instance.RefreshSlotUI(i);
         }
     }
+
+    // TODO
+    // Clicking a slot doesnt actually start
+    // Always populated with empty
+    // Cant scroll down
 }
