@@ -1,6 +1,7 @@
 ﻿using BlasII.CheatConsole;
 using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Persistence;
+using Il2CppTGK.Game;
 
 namespace BlasII.BetterSaves;
 
@@ -35,9 +36,17 @@ public class BetterSaves : BlasIIMod, ISlotPersistentMod<BsSlotData>, IGlobalPer
     /// <summary>
     /// Updates the selected slot
     /// </summary>
-    public void UpdateSelectedSlot(int slot)
+    protected override void OnNewGame()
     {
-        _selectedSlot = slot;
+        _selectedSlot = CoreCache.SaveData.CurrentSaveSlot;
+    }
+
+    /// <summary>
+    /// Updates the selected slot
+    /// </summary>
+    protected override void OnLoadGame()
+    {
+        _selectedSlot = CoreCache.SaveData.CurrentSaveSlot;
     }
 
     /// <summary>
