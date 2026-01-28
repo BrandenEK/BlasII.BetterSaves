@@ -7,7 +7,7 @@ namespace BlasII.BetterSaves;
 /// <summary>
 /// Allows creating more save files and naming them
 /// </summary>
-public class BetterSaves : BlasIIMod, ISlotPersistentMod<BsSlotData>
+public class BetterSaves : BlasIIMod, ISlotPersistentMod<BsSlotData>, IGlobalPersistentMod<BsGlobalData>
 {
     internal BetterSaves() : base(ModInfo.MOD_ID, ModInfo.MOD_NAME, ModInfo.MOD_AUTHOR, ModInfo.MOD_VERSION) { }
 
@@ -73,6 +73,25 @@ public class BetterSaves : BlasIIMod, ISlotPersistentMod<BsSlotData>
     public void ResetSlot()
     {
         _currentSlotName = null;
+    }
+
+    /// <summary>
+    /// Saves the selected slot
+    /// </summary>
+    public BsGlobalData SaveGlobal()
+    {
+        return new BsGlobalData()
+        {
+            SelectedSlot = _selectedSlot
+        };
+    }
+
+    /// <summary>
+    /// Loads the selected slot
+    /// </summary>
+    public void LoadGlobal(BsGlobalData data)
+    {
+        _selectedSlot = data.SelectedSlot;
     }
 
     /// <summary>
