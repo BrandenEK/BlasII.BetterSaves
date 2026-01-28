@@ -1,4 +1,5 @@
 ﻿using BlasII.CheatConsole;
+using System.Linq;
 
 namespace BlasII.BetterSaves;
 
@@ -12,10 +13,7 @@ internal class BsCommand : ModCommand
         {
             case "set":
                 {
-                    if (!ValidateParameterCount(args, 2))
-                        return;
-
-                    SetName(args[1]);
+                    SetName(string.Join(' ', args.Skip(1)));
                     break;
                 }
             case "clear":

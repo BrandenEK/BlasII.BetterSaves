@@ -20,12 +20,12 @@ public class BetterSaves : BlasIIMod, ISlotPersistentMod<BsSlotData>
     /// <summary>
     /// The name of the current save file
     /// </summary>
-    public string CurrentSlotName => _currentSlotName ?? NO_NAME;
+    public string CurrentSlotName => string.IsNullOrEmpty(_currentSlotName) ? NO_NAME : _currentSlotName;
 
     /// <summary>
     /// The name of the save file that is loaded on the main menu
     /// </summary>
-    public string MenuSlotName => _slotNames.TryGetValue(_loadedSlot, out string name) ? name : NO_NAME;
+    public string MenuSlotName => _slotNames.TryGetValue(_loadedSlot, out string name) && !string.IsNullOrEmpty(name) ? name : NO_NAME;
 
     /// <summary>
     /// Updates the current slot name
