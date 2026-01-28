@@ -34,11 +34,13 @@ internal class BsCommand : ModCommand
 
     private void SetName(string name)
     {
+        Write($"Setting slot name to \"{name}\"");
         Main.BetterSaves.UpdateSlotName(name);
     }
 
     private void ClearName()
     {
+        Write("Clearing slot name");
         Main.BetterSaves.UpdateSlotName(null);
     }
 }
