@@ -43,7 +43,7 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
     {
         if (__instance.slotsList.elementArray.Count < BetterSaves.TOTAL_SLOTS)
         {
-            ModLog.Error("Populating UI for new slots");
+            ModLog.Info("Populating UI for new slots");
 
             // Setup references
             var list = __instance.slotsList.elementArray;
@@ -82,7 +82,7 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
         
         if (__instance.slotsInfo.Count < BetterSaves.TOTAL_SLOTS)
         {
-            ModLog.Error("Populating info for new slots");
+            ModLog.Info("Populating info for new slots");
 
             // Load slot infos
             __instance.slotsInfo.Clear();
