@@ -7,22 +7,15 @@ using UnityEngine.UI;
 
 namespace BlasII.BetterSaves;
 
-[HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.OnSlotAccept))]
-class t3
-{
-    public static void Postfix(MainMenuWindowLogic __instance, int index, SlotInfo info)
-    {
-        ModLog.Info($"Accept slot for index {index}");
-    }
-}
-
+/// <summary>
+/// Update the selected slot whenever one is accepted
+/// </summary>
 [HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.OnSlotAcceptPressed))]
-class t4
+class MainMenuWindowLogic_OnSlotAcceptPressed_Patch
 {
     public static void Postfix(MainMenuWindowLogic __instance)
     {
-        ModLog.Info($"Accept slot pressed");
-        ModLog.Error("slot" + CoreCache.SaveData.CurrentSaveSlot);
+        Main.BetterSaves.UpdateSelectedSlot(CoreCache.SaveData.CurrentSaveSlot);
     }
 }
 
