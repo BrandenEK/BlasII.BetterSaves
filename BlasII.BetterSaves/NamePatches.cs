@@ -2,6 +2,8 @@
 using HarmonyLib;
 using Il2CppSystem.Threading.Tasks;
 using Il2CppTGK.Game.Components.UI;
+using System;
+using System.Text;
 
 namespace BlasII.BetterSaves;
 
@@ -13,58 +15,56 @@ class UISelectableMainMenuSlot_SetSlotData_Patch
 {
     public static void Postfix(UISelectableMainMenuSlot __instance, SlotInfo info)
     {
-        //NewSlotInfo newInfo = info.Cast<NewSlotInfo>();
+        ModLog.Info($"Retrieving slot info for slot");
 
-        if (info is not NewSlotInfo)
+        var list = info.unlockedWeapons;
+
+        int startIdx = -1;
+        for (int i = 0; i < list.Count; i++)
         {
-            ModLog.Error("slot info was not overwritten");
+            if (list[i] == -1)
+            {
+                startIdx = i + 1;
+                break;
+            }
+        }
+
+        if (startIdx == -1)
+        {
+            ModLog.Error("Failed to find starting index in slot info");
             return;
         }
 
-        NewSlotInfo newInfo = (NewSlotInfo)info;
+        var bytes = new byte[list.Count - startIdx];
+        for (int i = 0; i < bytes.Length; i++)
+            bytes[i] = (byte)list[startIdx + i];
 
-        string name = newInfo.SlotName;
+        while (startIdx <= list.Count)
+            list.RemoveAt(list.Count - 1);
+
+        ModLog.Warn(Encoding.UTF8.GetString(bytes));
+        ModLog.Warn(list.Count);
+
+        string name = Encoding.UTF8.GetString(bytes);
         string date = info.dateTime.ToString("MMM d yyyy");
         __instance.zoneName.SetText($"{name}    - {date} -");
     }
 }
 
 /// <summary>
-/// 
+/// Adds the slot name to the SlotInfo
 /// </summary>
 [HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.GetSlotInfo))]
 class MainMenuWindowLogic_GetSlotInfo_Patch
 {
     public static void Postfix(int index, Task<SlotInfo> __result)
     {
-        ModLog.Info($"Replacing slot info for slot {index}");
+        ModLog.Info($"Storing slot info for slot {index} ({Main.BetterSaves.CurrentSlotName})");
 
-        //var list = __result.Result.unlockedWeapons;
+        var list = __result.Result.unlockedWeapons;
+        list.Add(-1);
 
-        __result.m_result = new NewSlotInfo(__result.Result, Main.BetterSaves.CurrentSlotName);
-
-    }
-}
-
-public class NewSlotInfo : SlotInfo
-{
-    public string SlotName { get; }
-
-    public NewSlotInfo(SlotInfo info, string name)
-    {
-        canConvertNGPlus = info.canConvertNGPlus;
-        challengerTier = info.challengerTier;
-        currentZone = info.currentZone;
-        dateTime = info.dateTime;
-        doves = info.doves;
-        error = info.error;
-        hasChallengesActive = info.hasChallengesActive;
-        isNGPlus = info.isNGPlus;
-        percentValue = info.percentValue;
-        playtimeHours = info.playtimeHours;
-        playtimeMinutes = info.playtimeMinutes;
-        state = info.state;
-        unlockedWeapons = info.unlockedWeapons;
-        SlotName = name;
+        foreach (byte b in Encoding.UTF8.GetBytes(Main.BetterSaves.CurrentSlotName))
+            list.Add(b);
     }
 }
