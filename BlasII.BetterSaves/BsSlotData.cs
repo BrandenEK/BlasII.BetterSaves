@@ -5,7 +5,7 @@ namespace BlasII.BetterSaves;
 /// <summary>
 /// Stores slot save data for the Better Saves mod
 /// </summary>
-public class BatterSavesSlotData : SlotSaveData
+public class BsSlotData : SlotSaveData
 {
     /// <summary>
     /// The name of the slot
