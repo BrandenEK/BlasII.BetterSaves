@@ -8,18 +8,6 @@ using UnityEngine.UI;
 namespace BlasII.BetterSaves;
 
 /// <summary>
-/// Update the selected slot whenever one is accepted
-/// </summary>
-[HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.OnSlotAcceptPressed))]
-class MainMenuWindowLogic_OnSlotAcceptPressed_Patch
-{
-    public static void Postfix(MainMenuWindowLogic __instance)
-    {
-        Main.BetterSaves.UpdateSelectedSlot(CoreCache.SaveData.CurrentSaveSlot);
-    }
-}
-
-/// <summary>
 /// Scroll the slots menu whenever a new slot is selected
 /// </summary>
 [HarmonyPatch(typeof(MainMenuWindowLogic), nameof(MainMenuWindowLogic.OnSlotSelected))]
