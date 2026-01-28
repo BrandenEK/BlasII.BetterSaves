@@ -22,6 +22,7 @@ class t4
     public static void Postfix(MainMenuWindowLogic __instance)
     {
         ModLog.Info($"Accept slot pressed");
+        ModLog.Error("slot" + CoreCache.SaveData.CurrentSaveSlot);
     }
 }
 
@@ -118,6 +119,7 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
             __instance.RefreshSlotUI(i);
         }
 
-        //__instance.slotsList.SelectElement(5);
+        // Select last slot
+        __instance.slotsList.SelectElement(Main.BetterSaves.SelectedSlot);
     }
 }
