@@ -66,5 +66,8 @@ public class BetterSaves : BlasIIMod, ISlotPersistentMod<BsSlotData>
     /// </summary>
     public const int TOTAL_SLOTS = 10;
 
+    /// <summary>
+    /// The display name for a save file without a name
+    /// </summary>
     private const string NO_NAME = "Unnamed save file";
 }
