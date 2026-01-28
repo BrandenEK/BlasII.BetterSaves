@@ -1,7 +1,6 @@
 ﻿using BlasII.CheatConsole;
 using BlasII.ModdingAPI;
 using BlasII.ModdingAPI.Persistence;
-using System.Collections.Generic;
 
 namespace BlasII.BetterSaves;
 
@@ -12,10 +11,7 @@ public class BetterSaves : BlasIIMod, ISlotPersistentMod<BsSlotData>
 {
     internal BetterSaves() : base(ModInfo.MOD_ID, ModInfo.MOD_NAME, ModInfo.MOD_AUTHOR, ModInfo.MOD_VERSION) { }
 
-    private readonly Dictionary<int, string> _slotNames = [];
-
     private string _currentSlotName;
-    private int _loadedSlot;
 
     /// <summary>
     /// The name of the current save file
@@ -23,24 +19,11 @@ public class BetterSaves : BlasIIMod, ISlotPersistentMod<BsSlotData>
     public string CurrentSlotName => string.IsNullOrEmpty(_currentSlotName) ? NO_NAME : _currentSlotName;
 
     /// <summary>
-    /// The name of the save file that is loaded on the main menu
-    /// </summary>
-    public string MenuSlotName => _slotNames.TryGetValue(_loadedSlot, out string name) && !string.IsNullOrEmpty(name) ? name : NO_NAME;
-
-    /// <summary>
     /// Updates the current slot name
     /// </summary>
     public void UpdateSlotName(string name)
     {
         _currentSlotName = name;
-    }
-
-    /// <summary>
-    /// Updates the loaded slot on the main menu
-    /// </summary>
-    public void UpdateLoadedSlot(int slot)
-    {
-        _loadedSlot = slot;
     }
 
     /// <summary>
@@ -67,9 +50,7 @@ public class BetterSaves : BlasIIMod, ISlotPersistentMod<BsSlotData>
     /// </summary>
     public void LoadSlot(BsSlotData data)
     {
-        ModLog.Warn($"Loaded name {data.SlotName} for slot {_loadedSlot}");
         _currentSlotName = data.SlotName;
-        _slotNames[_loadedSlot] = data.SlotName;
     }
 
     /// <summary>

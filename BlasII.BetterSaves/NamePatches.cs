@@ -2,7 +2,6 @@
 using HarmonyLib;
 using Il2CppSystem.Threading.Tasks;
 using Il2CppTGK.Game.Components.UI;
-using System;
 using System.Text;
 
 namespace BlasII.BetterSaves;
@@ -15,8 +14,6 @@ class UISelectableMainMenuSlot_SetSlotData_Patch
 {
     public static void Postfix(UISelectableMainMenuSlot __instance, SlotInfo info)
     {
-        ModLog.Info($"Retrieving slot info for slot");
-
         var list = info.unlockedWeapons;
 
         int startIdx = -1;
@@ -41,9 +38,6 @@ class UISelectableMainMenuSlot_SetSlotData_Patch
 
         while (startIdx <= list.Count)
             list.RemoveAt(list.Count - 1);
-
-        ModLog.Warn(Encoding.UTF8.GetString(bytes));
-        ModLog.Warn(list.Count);
 
         string name = Encoding.UTF8.GetString(bytes);
         string date = info.dateTime.ToString("MMM d yyyy");

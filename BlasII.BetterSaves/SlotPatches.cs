@@ -96,8 +96,6 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
             // Load slot infos
             for (int i = 3; i < BetterSaves.TOTAL_SLOTS; i++)
             {
-                Main.BetterSaves.UpdateLoadedSlot(i);
-
                 SlotInfo info = __instance.GetSlotInfo(i).Result;
                 __instance.slotsInfo.Add(info);
             }
@@ -106,8 +104,6 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
         // Refresh new slots
         for (int i = 3; i < BetterSaves.TOTAL_SLOTS; i++)
         {
-            Main.BetterSaves.UpdateLoadedSlot(i);
-
             __instance.RefreshSlotUI(i);
         }
 
