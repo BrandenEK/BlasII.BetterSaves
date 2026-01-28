@@ -1,5 +1,6 @@
 ﻿using BlasII.ModdingAPI;
 using HarmonyLib;
+using Il2CppTGK.Game;
 using Il2CppTGK.Game.Components.UI;
 using UnityEngine;
 using UnityEngine.UI;
@@ -71,8 +72,13 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
             __instance.slotsList.gameObject.AddComponent<Image>();
             __instance.slotsList.gameObject.AddComponent<Mask>().showMaskGraphic = false;
 
+            // Remove old UI elements
+            Object.Destroy(list[1].obj.gameObject);
+            Object.Destroy(list[2].obj.gameObject);
+            list.Clear();
+
             // Create new UI elements
-            for (int i = 3; i < BetterSaves.TOTAL_SLOTS; i++)
+            for (int i = 0; i < BetterSaves.TOTAL_SLOTS; i++)
             {
                 GameObject slot = Object.Instantiate(template, parent);
                 list.Add(new ListData()
@@ -87,6 +93,9 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
                 UIPixelTextWithShadow text = slot.transform.Find("Number").GetComponent<UIPixelTextWithShadow>();
                 text.SetText((i + 1).ToString());
             }
+
+            // Remove template
+            Object.Destroy(template);
         }
         
         if (__instance.slotsInfo.Count < BetterSaves.TOTAL_SLOTS)
@@ -94,15 +103,17 @@ class MainMenuWindowLogic_OnOpenSlots_Patch
             ModLog.Error("Populating info for new slots");
 
             // Load slot infos
-            for (int i = 3; i < BetterSaves.TOTAL_SLOTS; i++)
+            __instance.slotsInfo.Clear();
+            for (int i = 0; i < BetterSaves.TOTAL_SLOTS; i++)
             {
                 SlotInfo info = __instance.GetSlotInfo(i).Result;
                 __instance.slotsInfo.Add(info);
+                CoreCache.SaveData.ResetPersistence();
             }
         }
 
         // Refresh new slots
-        for (int i = 3; i < BetterSaves.TOTAL_SLOTS; i++)
+        for (int i = 0; i < BetterSaves.TOTAL_SLOTS; i++)
         {
             __instance.RefreshSlotUI(i);
         }
